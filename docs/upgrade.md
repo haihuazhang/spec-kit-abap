@@ -86,7 +86,7 @@ specify init --here --force --ai copilot
 
 Without `--force`, the CLI warns you and asks for confirmation:
 
-```
+```text
 Warning: Current directory is not empty (25 items)
 Template files will be merged with existing content and may overwrite existing files
 Proceed? [y/N]
@@ -286,11 +286,13 @@ This tells Spec Kit which feature directory to use when creating specs, plans, a
 
 1. **Restart your IDE/editor** completely (not just reload window)
 2. **For CLI-based agents**, verify files exist:
+
    ```bash
    ls -la .claude/commands/      # Claude Code
    ls -la .gemini/commands/       # Gemini
    ls -la .cursor/commands/       # Cursor
    ```
+
 3. **Check agent-specific setup:**
    - Codex requires `CODEX_HOME` environment variable
    - Some agents need workspace restart or cache clearing
@@ -312,6 +314,7 @@ cp /tmp/constitution-backup.md .specify/memory/constitution.md
 ### "Warning: Current directory is not empty"
 
 **Full warning message:**
+
 ```text
 Warning: Current directory is not empty (25 items)
 Template files will be merged with existing content and may overwrite existing files
@@ -399,6 +402,7 @@ Once you've run `specify init`, the slash commands (like `/speckit.specify`, `/s
 **If your agent isn't recognizing slash commands:**
 
 1. **Verify command files exist:**
+
    ```bash
    # For GitHub Copilot
    ls -la .github/prompts/
@@ -414,6 +418,7 @@ Once you've run `specify init`, the slash commands (like `/speckit.specify`, `/s
 4. **For some agents**, you may need to reload the workspace or clear cache
 
 **Related issue:** If Copilot can't open local files or uses PowerShell commands unexpectedly, this is typically an IDE context issue, not related to `specify`. Try:
+
 - Restarting VS Code
 - Checking file permissions
 - Ensuring the workspace folder is properly opened
