@@ -1,104 +1,164 @@
-# Implementation Plan: [FEATURE]
+# 实施计划: [FEATURE]
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**分支**: `[###-feature-name]` | **日期**: [DATE] | **规格**: [link]
+**输入**: 来自 `/specs/[###-feature-name]/spec.md` 的功能规格
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+**注意**: 此模板由 `/speckit.plan` 命令填写。有关执行工作流，请参阅 `.specify/templates/commands/plan.md`。
 
-## Summary
+## 摘要
 
-[Extract from feature spec: primary requirement + technical approach from research]
+[从功能规格中提取：主要需求 + 确定转换策略]
 
-## Technical Context
+## 确定转换策略
 
 <!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
+  需要操作：将此部分的内容替换为根据用户需求结合constitution中的约定后最终确认的转换策略
 -->
+阅读 FEATURE_SPEC 和 `.specify/memory/constitution.md`，来确定最终转换RAP应用的转换策略并说明理由。
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+## 宪法检查
 
-## Constitution Check
+*门槛：必须在实际计划制定后重新检查。*
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+[根据宪法文件确定的门槛]
 
-[Gates determined based on constitution file]
+## 项目结构
 
-## Project Structure
-
-### Documentation (this feature)
+### 文档（此功能）
 
 ```text
 specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+├── plan.md              # 此文件 (/speckit.plan 命令输出)
+└── tasks.md             # 创建task阶段输出 (/speckit.tasks 命令 - 不是由 /speckit.plan 创建)
 ```
 
-### Source Code (repository root)
+### 源代码（仓库根目录）
+
 <!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
+  需要操作：将下面的占位符树替换为此功能的具体布局。
+  删除未使用的选项并用真实路径扩展所选结构（例如，src/classes, src/behavior_definitions）。
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+# Single project (DEFAULT)
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+├── service_definitions/
+├── behavior_definitions/
+├── data_definitions/
+├── metadata_extensions /
+└── classes /
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+## 实施计划路线确定 *(强制)*
 
-## Complexity Tracking
+> **当转换策略的确认方式为cds view entity时，仅执行`实施路线1`；**
+> **当转换策略为custom entity时,仅执行`实施路线2`**
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
+### 实施路线1
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+#### step1:确定整体架构 *(强制)*
+
+> 结合用户需求以及SAP RAP最佳实践路线，确定最终转换后的框架层次，按照以下格式输出
+
+1. **数据库层**：列出使用到的所有数据源（CDS视图名或者数据库表名）
+2. **数据模型层**：列出需要创建的接口视图名称列表
+3. **投影层**：列出需要创建的投影视图名称列表，投影视图必须和接口视图一一对应
+4. **UI注解层**：列出每个需要创建的UI annotation view名称，和投影视图一一对应
+5. **服务层**：列出需要创建的服务定义名称
+
+#### step2:创建数据模型层-CDS视图实体（接口层） *(强制)*
+
+> 结合用户需求创建数据实体，定义表关联逻辑，提供数据源映射，针对每个需要创建的视图实体输出以下信息。
+
+1. **字段列表**：列出所有字段列表（字段名+描述），主键字段统一在最上方定义，且需要特别标注。
+2. **关联关系**：列出当前视图每个数据源之间的关联关系，以及关联方式（合理使用left outer join 和 inner join确保数据不会多余或者丢失）。
+3. **关联逻辑说明**：列出主表选择，以及从各个数据源分别取了哪些字段。
+4. **语义对象说明**：针对数量和金额字段，必须声明对应的单位和货币字段。
+
+#### step3:创建视图投影-CDS投影实体（投影层） *(强制)*
+
+> 针对数据模型层-CDS视图实体创建对应的投影实体，默认所有字段都包含在内，并输出以下信息。
+
+1. **字段列表**：列出所有字段列表（字段名+描述），主键字段统一在最上方定义，和CDS视图实体（接口层）保持一致。
+2. **语义对象说明**：针对数量和金额字段，必须声明对应的单位和货币字段，完全继承自接口层视图。
+
+#### step4:创建UI注解-metadata extension（UI层） *(可选)*
+
+> 如果UI注解没有在投影实体中声明，则必须单独创建对应的UI注解annotate view，列出以下信息：
+
+**UI注解配置**：
+
+```text
+@UI.headerInfo:
+  - typeName: '符合数据内容的描述'
+  - typeNamePlural: '符合数据内容的描述'
+
+@UI.selectionField (查询字段，作为筛选条件):
+  - 字段名 (字段描述)
+
+
+@UI.lineItem (列表显示字段):
+  - 字段名
+
+@UI.facet (详情页面布局):
+  - 布局名称：所包含的字段列表
+
+@UI.identification (对象标识，用于object page页面):
+  - 字段名，默认和列表显示字段一致
+```
+
+#### step5:创建行为定义-Behavior Definition（接口层） *(可选)*
+
+> 仅当用户需求满足constitution规约的要求下，仍判定出需要创建行为定义时，则输出以下信息。
+
+1. **行为列表**：列出所需要的完整功能，包括是否需要增删改，是否包含action。
+
+#### step6:创建行为投影-Behavior Definition（投影层） *(可选)*
+
+> 仅当需要创建行为定义时才创建对应的行为投影。
+
+1. **行为列表**：暴露所有行为定义中声明的功能。
+
+#### step7:创建行为实施类-Behavior implementation class（行为实现类） *(可选)*
+
+> 仅当需要创建行为定义时才创建对应的行为实现类，包含如下信息。
+
+1. **方法清单**：针对行为定义中所有自定义action，分别列出每个action对应的实现方法详细执行逻辑。
+
+#### step8:创建服务定义-service definition（服务定义） *(强制)*
+
+> 必须创建，用于暴露出每个投影视图，投影视图中使用到的搜索帮助视图也需要一起暴露。
+
+1. **视图清单**：列出所有投影视图名称，以及使用到的搜索帮助视图名称。
+2. **根实体名称**：列出唯一的根投影视图名称。
+
+### 实施路线2
+
+#### step1:创建数据定义层-Custom entity *(强制)*
+
+> 结合用户需求以及SAP RAP最佳实践路线，确定最终要输出的所有字段，按照以下格式输出
+
+1. **字段列表**：列出所有字段列表（字段名+描述），主键字段统一在最上方定义，且需要特别标注。
+2. **语义对象说明**：针对数量和金额字段，必须声明对应的单位和货币字段。
+
+#### step2:创建查询实现类-query实现类 *(强制)*
+
+> 结合用户需求以及SAP RAP最佳实践路线，参考源程序取数逻辑，实现if_rap_query_provider接口，完成取数逻辑。
+
+1. **logic**：
+   * 从OData请求中获取所有筛选条件
+   * 根据源程序逻辑构建SQL queries
+      1. 列出所有的主要取数逻辑，参考源程序取数部分
+   * 合并数据至最终内表
+   * 按照RAP custom entity的标准逻辑实现最终数据分页和排序。  
+
+#### step3:创建服务定义-service definition（服务定义） *(强制)*
+
+> 必须创建，用于暴露出每个投影视图，投影视图中使用到的搜索帮助视图也需要一起暴露。
+
+1. **视图清单**：列出所有投影视图名称，以及使用到的搜索帮助视图名称。
+2. **根实体名称**：列出唯一的根投影视图名称。
+
+## 后续验证要求
+
+完成所有编码任务后需要对比源程序，列出所有已经实现的内容清单，以及未实现的内容清单，并标注未实现的原因。

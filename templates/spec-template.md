@@ -1,115 +1,51 @@
-# Feature Specification: [FEATURE NAME]
+# 功能规格: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
-**Input**: User description: "$ARGUMENTS"
+**功能分支**: `[###-feature-name]`  
+**创建时间**: [DATE]  
+**状态**: 草稿  
+**输入**: 用户描述: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## 用户需求和验证 *(强制)*
 
 <!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
+  重要：仔细分析需求内容，针对需求对应的目标程序中的所有内容进行识别，并拆解成以下内容：
+  1.筛选字段
+  2.授权检查要求
+  3.List输出字段清单
+  4.完整的取数逻辑及字段映射
+  5.用户自定义按钮逻辑
 -->
 
-### User Story 1 - [Brief Title] (Priority: P1)
+### 筛选字段 1 - [简短标题]
 
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+[用markdown列表的形式描述完整的选择字段，并说明是单选还是多选，是否有默认值，默认值的设置逻辑]
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+### 授权检查要求 *(非强制)* 2 - [简短标题]
 
-[Describe this user journey in plain language]
+[用通俗语言描述授权检查的要求，前提是源程序中对应的授权检查部分]
+**要求分类**
 
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. 数据查询授权检查：需包含数据展示前需要授权检查的SAP权限对象名称+权限字段+字段值来源
+2. 自定义按钮的授权检查：当满足何种条件时按钮可用
 
 ---
 
-### User Story 3 - [Brief Title] (Priority: P3)
+### List输出字段清单 3 - [简短标题]
 
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+[用markdown列表的形式描述完整的输出字段清单，并携带字段描述，字段类型，以及是否主键，除非源程序中有默认小计行为，否则禁止包含聚合逻辑]
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+### 完整的取数逻辑及字段映射 4 - [简短标题]
 
-### Edge Cases
+[用列表的形式针对每个输出字段阐述取值逻辑，需要携带字段名称，详细字段取值逻辑或者计算逻辑]
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
+---
 
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+### 用户自定义按钮逻辑 *(非强制)* 5 - [简短标题]
 
-## Requirements *(mandatory)*
+[用列表的形式描述完整的按钮名称+具体按钮执行逻辑，前提是源程序中有对应的自定义按钮逻辑]
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
-
-### Functional Requirements
-
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
-
-*Example of marking unclear requirements:*
-
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
-
-### Key Entities *(include if feature involves data)*
-
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
-
-## Success Criteria *(mandatory)*
-
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
-
-### Measurable Outcomes
-
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+---
