@@ -47,6 +47,10 @@ Spec-Driven Development **flips the script** on traditional software development
 uv tool install specify-cli --from git+https://github.com/haihuazhang/spec-kit-abap.git
 ```
 
+### 2. 将原有spec-kit cli 切换至HAND私有仓库
+```bash
+uv tool install specify-cli --force --from git+https://github.com/haihuazhang/spec-kit-abap.git
+```
 
 
 **Benefits of persistent installation:**
