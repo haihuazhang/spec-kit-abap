@@ -42,38 +42,12 @@ Spec-Driven Development **flips the script** on traditional software development
 
 ## ⚡ Get Started
 
-### 1. Install Specify CLI
-
-Choose your preferred installation method:
-
-#### Option 1: Persistent Installation (Recommended)
-
-Install once and use everywhere:
-
+### 1. 从HAND仓库下载abap-kit.
 ```bash
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+uv tool install specify-cli --from git+https://github.com/haihuazhang/spec-kit-abap.git
 ```
 
-Then use the tool directly:
 
-```bash
-specify init <PROJECT_NAME>
-specify check
-```
-
-To upgrade Specify, see the [Upgrade Guide](./docs/upgrade.md) for detailed instructions. Quick upgrade:
-
-```bash
-uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git
-```
-
-#### Option 2: One-time Usage
-
-Run directly without installing:
-
-```bash
-uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
-```
 
 **Benefits of persistent installation:**
 

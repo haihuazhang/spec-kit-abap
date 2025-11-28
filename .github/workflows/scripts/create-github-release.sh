@@ -16,37 +16,37 @@ VERSION="$1"
 VERSION_NO_V=${VERSION#v}
 
 gh release create "$VERSION" \
-  .genreleases/spec-kit-template-copilot-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-copilot-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-claude-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-claude-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-gemini-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-gemini-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-cursor-agent-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-cursor-agent-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-opencode-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-opencode-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-qwen-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-qwen-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-windsurf-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-windsurf-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-codex-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-codex-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-kilocode-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-kilocode-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-auggie-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-auggie-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-roo-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-roo-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-codebuddy-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-codebuddy-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-amp-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-amp-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-shai-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-shai-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-q-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-q-ps-"$VERSION".zip \
-  .genreleases/spec-kit-template-bob-sh-"$VERSION".zip \
-  .genreleases/spec-kit-template-bob-ps-"$VERSION".zip \
-  --title "Spec Kit Templates - $VERSION_NO_V" \
+  .genreleases/spec-kit-abap-template-copilot-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-copilot-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-claude-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-claude-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-gemini-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-gemini-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-cursor-agent-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-cursor-agent-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-opencode-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-opencode-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-qwen-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-qwen-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-windsurf-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-windsurf-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-codex-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-codex-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-kilocode-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-kilocode-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-auggie-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-auggie-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-roo-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-roo-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-codebuddy-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-codebuddy-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-amp-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-amp-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-shai-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-shai-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-q-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-q-ps-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-bob-sh-"$VERSION".zip \
+  .genreleases/spec-kit-abap-template-bob-ps-"$VERSION".zip \
+  --title "Spec Kit - ABAP Templates - $VERSION_NO_V" \
   --notes-file release_notes.md
