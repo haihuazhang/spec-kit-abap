@@ -312,7 +312,7 @@ cp /tmp/constitution-backup.md .specify/memory/constitution.md
 ### "Warning: Current directory is not empty"
 
 **Full warning message:**
-```
+```text
 Warning: Current directory is not empty (25 items)
 Template files will be merged with existing content and may overwrite existing files
 Do you want to continue? [y/N]
@@ -329,6 +329,7 @@ This warning appears when you run `specify init --here` (or `specify init .`) in
 **What gets overwritten:**
 
 Only Spec Kit infrastructure files:
+
 - Agent command files (`.claude/commands/`, `.github/prompts/`, etc.)
 - Scripts in `.specify/scripts/`
 - Templates in `.specify/templates/`
@@ -346,6 +347,7 @@ Only Spec Kit infrastructure files:
 - **Type `y` and press Enter** - Proceed with the merge (recommended if upgrading)
 - **Type `n` and press Enter** - Cancel the operation
 - **Use `--force` flag** - Skip this confirmation entirely:
+
   ```bash
   specify init --here --force --ai copilot
   ```

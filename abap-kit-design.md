@@ -66,7 +66,7 @@
 
 ## Prompt 与模板目录建议（两种方案通用）
 
-```
+```text
 templates/abap-kit/
   shared/
     glossary.md              # 术语、禁用写法、质量门槛（ABAP→RAP/Fiori）
