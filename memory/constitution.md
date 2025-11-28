@@ -1,50 +1,173 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+同步影响报告:
+- 版本变更: 1.0.0 → 1.1.0
+- 修改原则: 核心原则一（转换策略分析）
+- 新增内容: 详细的CDS View Entity与Custom Entity选型判定标准
+- 待办事项: 无
+-->
 
-## Core Principles
+# SAP ABAP 到 RAP 转换规约
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## 核心原则
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 一、转换策略分析与选型标准（强制性）
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+在开始任何RAP转换之前，必须对源ABAP代码的数据获取逻辑进行深度分析。必须根据以下严格标准选择转换路径：
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+#### 1. 选择 CDS View Entity 的标准
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+当源程序满足以下**任一**条件时，必须采用 **CDS View Entity** 方式：
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- **数据源纯净**：数据直接来源于数据库表（透明表、标准表），且可以通过 SQL 关联（JOIN/UNION）获取。
+- **逻辑可SQL化**：数据处理逻辑（如计算字段、聚合、CASE WHEN）可以完全转换为 CDS SQL 表达式。
+- **利用HANA下推**：需要利用 HANA 数据库层进行高性能过滤、排序和分页。
+- **标准事务需求**：需要使用 RAP Managed BO 特性（如自动编号、草稿表、标准增删改逻辑）。
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+#### 2. 选择 Custom Entity 的标准
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+当源程序满足以下**任一**条件时，必须采用 **Custom Entity (Unmanaged Query)** 方式：
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- **黑盒数据源**：数据获取依赖于复杂的函数模块（FM）、BAPI 或类方法（Class Method），且无法拆解为直接的 SQL 查询。
+- **复杂ABAP逻辑**：数据获取后包含无法用 SQL 表达的复杂后处理逻辑（例如：依赖于游标的循环处理、复杂的内表交叉比对、调用旧有代码库进行计算、数据获取后仍需要根据条件动态过滤）。
+- **外部数据源**：数据来源于外部系统（HTTP、SOAP、RFC）或非数据库持久化的运行时结构。
+- **动态输出**：输出结构或数据内容高度依赖于运行时参数，且 CDS 虚拟元素（Virtual Elements）不足以支撑其复杂度。
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+**理由**：错误的选型会导致架构僵化。强行用 CDS View 包装复杂 ABAP 逻辑会导致性能灾难；反之，滥用 Custom Entity 会丢失 RAP 框架自带的过滤、排序和 OData 查询优化能力。
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### 二、单一根实体要求（不可协商）
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+每个RAP转换必须在接口层和投影层都生成且仅生成一个根实体。严格禁止多根架构。
+
+**要求**：
+
+- 接口视图：一个根实体，通过组合关系关联子实体
+- 投影视图：一个根投影，保持相同的层次结构
+- 根投影视图必须提供事务契约（`provider contract transactional_query`）
+
+**理由**：单一根实体确保清晰的所有权，简化授权管理，并符合RAP托管场景模式。多根会造成服务边界模糊并使草稿处理复杂化。
+
+### 三、完整的UI注解（强制性）
+
+所有投影视图必须包含完整的UI注解，以确保Fiori Elements正确渲染。以下注解为强制性要求：
+
+- `@UI.facet`：定义对象页面结构（标识、字段组、行项目）
+- `@UI.lineItem`：配置列表报表列和操作
+- `@UI.selectionField`：定义过滤栏字段
+- `@UI.identification`：指定对象页面标题字段
+
+**附加注解**（根据实际需求添加）：
+
+- `@UI.fieldGroup`：在对象页面上分组相关字段
+- `@UI.headerInfo`：定义标题和描述
+- `@Consumption.valueHelpDefinition`：提供F4帮助
+
+**理由**：完整的UI注解消除了手动元数据扩展工作，并确保开箱即用的一致、专业的Fiori用户体验。
+
+### 四、行为定义最小化原则
+
+仅当源ABAP程序包含明确的事务操作时，才必须创建行为定义（BDEF）：
+
+- CREATE操作（例如：INSERT、APPEND并提交数据库）
+- UPDATE/MODIFY操作（例如：UPDATE、MODIFY并提交数据库）
+- DELETE操作（例如：DELETE并提交数据库）
+- 触发数据更改的自定义按钮事件或用户命令
+
+**禁止**：为只读ALV报表、查询程序或仅显示应用创建BDEF。
+
+**理由**：不必要的行为定义会增加复杂性、维护负担和潜在的安全风险。只读场景应使用简单的CDS消费，无需托管保存逻辑。
+
+### 五、稳健性优先于简洁性（代码质量）
+
+代码质量和可维护性必须优先于简洁性或巧妙的语法。
+
+**要求**：
+
+- 使用标准的、经过验证的ABAP语法，而非实验性或边缘情况的构造
+- 避免复杂的内联操作（例如：嵌套的`VALUE`、`REDUCE`、`FILTER`链）
+- 使用经过验证的、可读的模式实现分页、排序和过滤
+- **禁止**：在生产代码中使用`FOR`表达式（使用显式的`LOOP AT`代替）
+- 在清晰度提高的情况下，优先使用显式类型声明而非类型推断
+
+**理由**：RAP应用具有较长的生命周期。代码必须能够被不同技能水平的团队维护。稳健性可防止由晦涩语法边缘情况引起的生产事故。
+
+### 六、命名约定
+
+- 接口视图（Interface View）：ZI_* 前缀
+- 消费视图（Consumption/Projection View）：ZC_* 前缀
+- 行为定义 (Behavior definition): ZI_*前缀，与接口根视图一致
+- 行为投影 (Behavior projection): ZC_* 前缀，与投影根视图一致
+- 服务定义：ZUI_* 前缀
+- 服务绑定：ZUI_*_O4 后缀（表示OData V4）
+- 行为实施类：ZBP_* 前缀
+- query实施类：ZCL_*前缀
+
+## 代码质量标准
+
+### 严格的类型安全（不可协商）
+
+所有方法调用，特别是框架接口，必须强制执行严格的类型检查：
+
+- 变量类型必须与方法签名参数类型完全匹配
+- 没有显式验证的情况下不允许隐式类型转换
+- 仅在验证类型兼容性后使用`CAST`或`CONV`
+- 所有`IMPORTING`、`EXPORTING`、`CHANGING`参数必须具有匹配的类型
+
+**验证**：在代码激活之前，根据框架文档验证所有接口调用。
+
+### 完整性和激活就绪性
+
+生成的RAP工件必须：
+
+- **完整**：没有占位符注释，如`"TODO"`或`"实现逻辑"`
+- **可激活**：代码必须通过语法检查并无错误激活
+- **符合标准**：遵循SAP命名约定（例如：接口用`ZI_*`，消费用`ZC_*`）
+- **自包含**：所有依赖项（表、类型、值帮助）必须正确引用
+
+## RAP转换工作流
+
+### 阶段1：源代码分析
+
+1. 识别程序类型（ALV报表、事务、函数模块包装器等）
+2. 分析数据源（数据库表、内表、外部API）
+3. **执行选型判定**：根据原则一，明确选择 CDS View Entity 或 Custom Entity
+4. 记录事务操作（如有）以确定BDEF必要性
+
+### 阶段2：实体设计
+
+1. 设计根实体结构（单一根、组合层次结构）
+2. 定义具有适当关联的接口视图（`ZI_*`）
+3. 创建具有契约规范的投影视图（`ZC_*`）
+4. 全面应用UI注解
+
+### 阶段3：行为实现（有条件）
+
+1. **如果**源代码包含事务操作：
+   - 创建具有最少必要操作的BDEF
+   - 在行为实现类中实现验证逻辑
+   - 使用托管保存和草稿（如适用）
+2. **否则**：完全跳过BDEF创建
+
+### 阶段4：验证
+
+1. 验证单一根实体约束
+2. 检查UI注解完整性
+3. 验证所有方法调用的类型安全
+4. 确保代码无错误激活
+
+## 治理规范
+
+本规约优先于ABAP到RAP转换项目的所有其他编码实践和指南。
+
+**修订流程**：
+
+- 修订需要记录的理由和影响分析
+- 版本递增遵循语义化版本控制（主版本.次版本.补丁版本）
+- 所有修订必须更新相关模板和文档
+
+**合规性**：
+
+- 所有代码审查必须验证是否遵守这些原则
+- 不合规需要明确的理由和批准
+- 超出这些标准的复杂性必须有业务需求的理由
+
+**版本**: 1.1.0 | **批准日期**: 2025-11-27 | **最后修订**: 2025-11-27
